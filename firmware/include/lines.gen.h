@@ -8,16 +8,12 @@
 struct DeviceLine {
   const char* key;
   const char* file;
-  uint16_t spinMs;
-  uint16_t cooldownMs;
 };
 
 constexpr DeviceLine kDeviceLines[] = {
-    {"power_on", "/power_on.wav", 400, 800},
-    {"shake_1", "/shake_1.wav", 400, 800},
-    {"shake_2", "/shake_2.wav", 400, 800},
-    {"shake_3", "/shake_3.wav", 400, 800},
-    {"power_off", "/power_off.wav", 400, 800},
+    {"light_off", "/light_off.wav"},
+    {"light_on", "/light_on.wav"},
+    {"boot", "/boot.wav"},
 };
 
 constexpr size_t kDeviceLineCount = sizeof(kDeviceLines) / sizeof(kDeviceLines[0]);

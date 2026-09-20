@@ -2,15 +2,13 @@
 
 import { promises as fsp } from 'node:fs'
 import path from 'node:path'
-import { DEFAULT_COOLDOWN_MS, DEFAULT_SPIN_MS, loadLines, type LineEntry } from '@taffybot/voice'
+import { loadLines, type LineEntry } from '@taffybot/voice'
 
 const MANIFEST = path.resolve('hardware/lines.json')
 const TARGET = path.resolve('firmware/include/lines.gen.h')
 
 function renderRow(line: LineEntry): string {
-  const spinMs = line.spinMs ?? DEFAULT_SPIN_MS
-  const cooldownMs = line.cooldownMs ?? DEFAULT_COOLDOWN_MS
-  return `    {"${line.key}", "/${line.key}.wav", ${spinMs}, ${cooldownMs}},`
+  return `    {"${line.key}", "/${line.key}.wav"},`
 }
 
 function renderHeader(lines: LineEntry[]): string {
@@ -24,8 +22,6 @@ function renderHeader(lines: LineEntry[]): string {
 struct DeviceLine {
   const char* key;
   const char* file;
-  uint16_t spinMs;
-  uint16_t cooldownMs;
 };
 
 constexpr DeviceLine kDeviceLines[] = {
