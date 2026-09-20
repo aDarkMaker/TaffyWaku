@@ -3,7 +3,7 @@
 A monorepo with two independent products that share a persona and its voice assets:
 
 - a QQ bot that answers with real-time synthesized voice, built on [AuroraX](https://homearchbishop.github.io/aurorax/) and NapCat;
-- an ESP32 shake toy that plays pre-generated voice lines offline from an SD card.
+- a desk-side switch flipper that listens for a wake word, flips a rocker light switch with a servo, and answers with a pre-generated voice line.
 
 ## Architecture
 
@@ -19,9 +19,10 @@ flowchart LR
   Lines["hardware/lines.json"] --> Cli
   Lines --> Gen["scripts/gen-lines.ts"]
   Gen --> Header["firmware/include/lines.gen.h"]
-  Data --> Device["ESP32 shake toy"]
+  Data --> Device["ESP32 switch flipper"]
   Header --> Device
-  Device --> Motor["Motor + LED"]
+  Mic["SU-03T voice module"] --> Device
+  Device --> Servo["Servo arm on the rocker switch"]
   Device --> Amp["MAX98357A speaker"]
 ```
 
@@ -35,8 +36,8 @@ the line manifest, nothing else.
 | `apps/bot`       | AuroraX service connected to NapCat, replies with synthesized voice |
 | `apps/voice-cli` | Generates WAV assets for the bot and for the device                 |
 | `packages/voice` | TTS client, WAV helpers, persona presets, line manifest loader      |
-| `firmware`       | ESP32 firmware: trigger, WAV playback, motor and LED effects        |
-| `hardware`       | BOM, wiring, power plan, line manifest                              |
+| `firmware`       | ESP32 firmware: offline command decoding, servo flip, WAV playback  |
+| `hardware`       | BOM, wiring, servo geometry, line manifest                          |
 | `scripts`        | Line header generation and device asset sync                        |
 
 ## Requirements
