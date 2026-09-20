@@ -15,14 +15,14 @@ constexpr uint8_t kPinI2sBclk = 26;
 constexpr uint8_t kPinI2sLrc = 25;
 constexpr uint8_t kPinI2sDin = 22;
 
-// Motor driver (H-bridge)
-constexpr uint8_t kPinMotorIn1 = 32;
-constexpr uint8_t kPinMotorIn2 = 33;
+// Rocker switch flipper servo (LEDC PWM)
+constexpr uint8_t kPinServo = 13;
 
-// User input
-constexpr uint8_t kPinButton = 0;
-constexpr uint8_t kPinShakeSensor = 34;
+// SU-03T offline voice module (UART2)
+constexpr uint8_t kPinVoiceRx = 16;
+constexpr uint8_t kPinVoiceTx = 17;
+constexpr uint32_t kVoiceBaud = 9600;
 
-// Addressable status LED (WS2812)
-constexpr uint8_t kPinLedData = 13;
+// Status LED (WS2812)
+constexpr uint8_t kPinLedData = 14;
 constexpr uint8_t kLedCount = 1;

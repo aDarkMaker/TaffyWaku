@@ -16,6 +16,7 @@ constexpr uint16_t kT1hTicks = 6;
 constexpr uint16_t kT1lTicks = 6;
 constexpr uint8_t kBytesPerLed = 3;
 constexpr uint32_t kBreathStepMs = 20;
+constexpr uint32_t kBreathPeriodMs = 1200;
 
 rmt_channel_handle_t g_rmtChannel = nullptr;
 rmt_encoder_handle_t g_rmtEncoder = nullptr;
@@ -61,18 +62,18 @@ void begin() {
   rmt_enable(g_rmtChannel);
 }
 
-void breathe(uint16_t periodMs) {
+void idle() {
   static uint32_t phase = 0;
   static uint32_t lastStepMs = 0;
-  const uint32_t span = periodMs * 2;
+  const uint32_t span = kBreathPeriodMs * 2;
   const uint32_t now = millis();
 
   if (now - lastStepMs >= kBreathStepMs) {
     lastStepMs = now;
     phase = (phase + kBreathStepMs) % span;
   }
-  const uint16_t level = phase < periodMs ? phase : span - phase;
-  const uint8_t brightness = static_cast<uint8_t>((level * 255) / periodMs);
+  const uint16_t level = phase < kBreathPeriodMs ? phase : span - phase;
+  const uint8_t brightness = static_cast<uint8_t>((level * 255) / kBreathPeriodMs);
 
   flash(scaleChannel(255, brightness), scaleChannel(120, brightness),
         scaleChannel(200, brightness), 0);

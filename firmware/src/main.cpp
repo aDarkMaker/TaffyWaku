@@ -1,4 +1,4 @@
-// Boot entry: trigger -> pick a line -> play audio with motor and LED feedback.
+// Boot entry: voice command -> flip the rocker switch -> play the matching line.
 
 #include <Arduino.h>
 #include <SD.h>
@@ -6,20 +6,33 @@
 
 #include "audio_player.h"
 #include "effects.h"
+#include "flipper.h"
 #include "lines.gen.h"
-#include "motion.h"
 #include "pins.h"
-#include "trigger.h"
+#include "voice.h"
 
 namespace {
 
-constexpr uint16_t kBreathPeriodMs = 1200;
-constexpr uint16_t kLoopTickMs = 20;
 constexpr uint32_t kSdFrequencyHz = 4000000;
+constexpr uint16_t kServoHoldMs = 350;
+constexpr uint16_t kCommandCooldownMs = 1500;
+constexpr uint16_t kLedStepMs = 20;
 
 bool g_storageReady = false;
-uint32_t g_lastTriggerMs = 0;
-size_t g_lineIndex = 0;
+uint32_t g_lastCommandMs = 0;
+
+const DeviceLine* findLine(const char* key) {
+  for (size_t i = 0; i < kDeviceLineCount; ++i) {
+    if (strcmp(kDeviceLines[i].key, key) == 0) return &kDeviceLines[i];
+  }
+  return nullptr;
+}
+
+void playLine(const char* key) {
+  if (!g_storageReady) return;
+  const DeviceLine* line = findLine(key);
+  if (line != nullptr) audio::play(line->file);
+}
 
 void initStorage() {
   g_storageReady = SD.begin(kPinSdCs, SPI, kSdFrequencyHz);
@@ -28,15 +41,19 @@ void initStorage() {
   }
 }
 
-void runLine(const DeviceLine& line) {
+void handleCommand(VoiceCommand command) {
   const uint32_t now = millis();
-  if (now - g_lastTriggerMs < line.cooldownMs) return;
-  g_lastTriggerMs = now;
+  if (now - g_lastCommandMs < kCommandCooldownMs) return;
+  g_lastCommandMs = now;
 
-  effects::flash(255, 120, 200, 80);
-  motion::spin(line.spinMs);
-  if (g_storageReady) {
-    audio::play(line.file);
+  if (command == VoiceCommand::lightOff) {
+    effects::flash(255, 120, 200, 80);
+    flipper::press(SwitchSide::down, kServoHoldMs);
+    playLine("light_off");
+  } else if (command == VoiceCommand::lightOn) {
+    effects::flash(255, 220, 120, 80);
+    flipper::press(SwitchSide::up, kServoHoldMs);
+    playLine("light_on");
   }
 }
 
@@ -46,17 +63,18 @@ void setup() {
   Serial.begin(115200);
   audio::begin();
   effects::begin();
-  motion::begin();
-  trigger::begin();
+  flipper::begin();
+  voice::begin();
   initStorage();
   Serial.printf("[main] %u line(s) loaded\n", static_cast<unsigned>(kDeviceLineCount));
 }
 
 void loop() {
-  effects::breathe(kBreathPeriodMs);
-  delay(kLoopTickMs);
-  if (!trigger::polled()) return;
-
-  runLine(kDeviceLines[g_lineIndex]);
-  g_lineIndex = (g_lineIndex + 1) % kDeviceLineCount;
+  const VoiceCommand command = voice::poll();
+  if (command != VoiceCommand::none) {
+    handleCommand(command);
+  } else {
+    effects::idle();
+  }
+  delay(kLedStepMs);
 }
