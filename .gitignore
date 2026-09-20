@@ -1,0 +1,26 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+firmware/.pio/
+
+# generated device assets (produced by `bun run sync:device`)
+firmware/data/
+
+# generated voice assets (produced by `bun run tts`)
+assets/out/
+
+# secrets
+.env
+.env.*
+!.env.example
+
+# local agent conventions
+AGENTS.md
+
+# editor / os
+.DS_Store
+*.log
+logs/
+.idea/

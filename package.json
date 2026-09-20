@@ -1,0 +1,41 @@
+{
+  "name": "taffybot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "bun": ">=1.1"
+  },
+  "scripts": {
+    "bot:dev": "bun --watch apps/bot/src/index.ts",
+    "bot:start": "bun apps/bot/src/index.ts",
+    "tts": "bun apps/voice-cli/src/cli.ts",
+    "tts:batch": "bun apps/voice-cli/src/cli.ts --batch hardware/lines.json",
+    "gen:lines": "bun scripts/gen-lines.ts",
+    "sync:device": "bun scripts/sync-device-assets.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "spell": "cspell --no-progress --no-summary \"**/*.{ts,js,json,md,cpp,h,ini}\" \"!**/node_modules/**\" \"!**/dist/**\" \"!firmware/.pio/**\"",
+    "typecheck": "tsc --noEmit",
+    "check": "bun run lint && bun run format:check && bun run spell && bun run typecheck"
+  },
+  "dependencies": {
+    "@taffybot/voice": "workspace:*"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.20.3",
+    "cspell": "^10.3.3",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.8",
+    "typescript": "~5.7.0",
+    "typescript-eslint": "^8.70.0"
+  }
+}
