@@ -1,9 +1,22 @@
 {
   "lines": [
-    { "key": "power_on", "text": "塔菲醒啦，今天也一起摇一摇吧", "preset": "cheerful" },
-    { "key": "shake_1", "text": "呀，别摇那么用力啦", "preset": "excited" },
-    { "key": "shake_2", "text": "再摇一下我就晕掉啦", "preset": "gentle" },
-    { "key": "shake_3", "text": "好晕好晕，慢一点点嘛", "preset": "sulky" },
-    { "key": "power_off", "text": "塔菲要睡觉啦，明天见", "preset": "gentle" }
+    {
+      "key": "light_off",
+      "text": "雏草姬，晚安喵～",
+      "preset": "gentle",
+      "comment": "Played after flipping the switch down"
+    },
+    {
+      "key": "light_on",
+      "text": "不起床的都是懒狗！",
+      "preset": "excited",
+      "comment": "Played after flipping the switch up"
+    },
+    {
+      "key": "boot",
+      "text": "塔菲待机中，喊我关灯吧",
+      "preset": "cheerful",
+      "comment": "Optional boot line, not wired to a command yet"
+    }
   ]
 }
