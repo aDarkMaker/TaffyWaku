@@ -1,0 +1,8 @@
+node_modules
+dist
+bun.lock
+package-lock.json
+assets
+firmware/.pio
+firmware/data
+firmware/include/lines.gen.h
